@@ -131,6 +131,9 @@ public class GameEngine {
         return false;
     }
 
+    public void resetGame() {
+
+    }
     // ----------------------------------------------------------
     /**
      * Get the current value of passenger.
@@ -161,28 +164,6 @@ public class GameEngine {
             return false;
         }
         return true;
-    }
-
-    // ----------------------------------------------------------
-    /**
-     * A temporary helper for me to figure out what's going on
-     * @param name the name of the char you are looking for
-     * @return a gameobject with that char
-     */
-    public GameObject getCharacter(String name) {
-        if(name == "WOLF") {
-            return wolf;
-        }
-        else if(name == "GOOSE") {
-            return goose;
-        }
-        else if(name == "BEANS") {
-            return beans;
-        }
-        else
-        {
-            return farmer;
-        }
     }
 
     private GameObject getGameObject(Item id) {

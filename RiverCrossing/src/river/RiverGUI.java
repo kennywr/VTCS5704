@@ -1,5 +1,6 @@
 package river;
 
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -11,6 +12,7 @@ import java.io.Console;
 import java.util.stream.Collector.Characteristics;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import sun.java2d.windows.WindowsFlags;
 
 /**
  * Graphical interface for the River application
@@ -44,6 +46,11 @@ public class RiverGUI extends JPanel implements MouseListener {
     // ==========================================================
 
     private GameEngine engine; // Model
+    private Rectangle farmerRect;
+    private Rectangle wolfRect;
+    private Rectangle gooseRect;
+    private Rectangle beansRect;
+    private Rectangle boatRect;
 
     // ==========================================================
     // Constructor
@@ -53,6 +60,7 @@ public class RiverGUI extends JPanel implements MouseListener {
 
         engine = new GameEngine();
         addMouseListener(this);
+        setActiveRectangles();
 
     }
 
@@ -63,104 +71,27 @@ public class RiverGUI extends JPanel implements MouseListener {
     @Override
     public void paintComponent(Graphics g) {
 
+        setActiveRectangles();
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-        paintObjectsOnLeft(g);
-        paintObjectsOnRight(g);
-        paintObjectsOnBoat(g);
+        //Fill Boat
+        fillActualRect(boatRect, g, Color.ORANGE, "");
+
+        //paint farmer
+        fillActualRect(farmerRect, g, Color.MAGENTA, "");
+
+        //Fill passengers
+        fillActualRect(wolfRect, g, Color.CYAN, "W");
+        System.out.println("made wolf");
+        fillActualRect(gooseRect, g, Color.CYAN, "G");
+        System.out.println("made goose");
+        fillActualRect(beansRect, g, Color.CYAN, "B");
+        System.out.println("made beans");
+
     }
 
-    public void paintObjectsOnLeft(Graphics g) {
 
-        if (engine.getLocation(Item.FARMER) == Location.LEFT_BANK) {
-            g.setColor(Color.MAGENTA);
-            g.fillRect(80, 215, 50, 50);
-        }
-        if (engine.getLocation(Item.WOLF) == Location.LEFT_BANK) {
-            g.setColor(Color.CYAN);
-            g.fillRect(20, 215, 50, 50);
-            paintStringInRectangle("W", 20, 215, 50, 50, g);
-        }
-        if (engine.getLocation(Item.GOOSE) == Location.LEFT_BANK) {
-            g.setColor(Color.CYAN);
-            g.fillRect(20, 275, 50, 50);
-            paintStringInRectangle("G", 20, 275, 50, 50, g);
-        }
-        if (engine.getLocation(Item.BEANS) == Location.LEFT_BANK) {
-            g.setColor(Color.CYAN);
-            g.fillRect(80, 275, 50, 50);
-            paintStringInRectangle("B", 80, 275, 50, 50, g);
-        }
-    }
-
-    public void paintObjectsOnRight(Graphics g) {
-
-        if (engine.getLocation(Item.FARMER) == Location.RIGHT_BANK) {
-            g.setColor(Color.MAGENTA);
-            g.fillRect(730, 215, 50, 50);
-        }
-        if (engine.getLocation(Item.WOLF) == Location.RIGHT_BANK) {
-            g.setColor(Color.CYAN);
-            g.fillRect(670, 215, 50, 50);
-            paintStringInRectangle("W", 670, 215, 50, 50, g);
-        }
-        if (engine.getLocation(Item.GOOSE) == Location.RIGHT_BANK) {
-            g.setColor(Color.CYAN);
-            g.fillRect(670, 275, 50, 50);
-            paintStringInRectangle("G", 670, 275, 50, 50, g);
-        }
-        if (engine.getLocation(Item.BEANS) == Location.RIGHT_BANK) {
-            g.setColor(Color.CYAN);
-            g.fillRect(730, 275, 50, 50);
-            paintStringInRectangle("B", 730, 275, 50, 50, g);
-        }
-    }
-
-    public void paintObjectsOnBoat(Graphics g) {
-        if (engine.getBoatLocation() == Location.LEFT_BANK) {
-            g.setColor(Color.ORANGE);
-            g.fillRect(140, 275, 110, 50);
-            if (engine.getLocation(Item.FARMER) == Location.BOAT) {
-                g.setColor(Color.MAGENTA);
-                g.fillRect(140, 215, 50, 50);
-            }
-            if (engine.getLocation(Item.WOLF) == Location.BOAT) {
-                g.setColor(Color.CYAN);
-                g.fillRect(200, 215, 50, 50);
-                paintStringInRectangle("W", 200, 215, 50, 50, g);
-            } else if (engine.getLocation(Item.GOOSE) == Location.BOAT) {
-                g.setColor(Color.CYAN);
-                g.fillRect(200, 215, 50, 50);
-                paintStringInRectangle("G", 200, 215, 50, 50, g);
-            } else if (engine.getLocation(Item.BEANS) == Location.BOAT) {
-                g.setColor(Color.CYAN);
-                g.fillRect(200, 215, 50, 50);
-                paintStringInRectangle("B", 200, 215, 50, 50, g);
-            }
-        }
-        if (engine.getBoatLocation() == Location.RIGHT_BANK) {
-            g.setColor(Color.ORANGE);
-            g.fillRect(550, 275, 110, 50);
-            if (engine.getLocation(Item.FARMER) == Location.BOAT) {
-                g.setColor(Color.MAGENTA);
-                g.fillRect(550, 215, 50, 50);
-            }
-            if (engine.getLocation(Item.WOLF) == Location.BOAT) {
-                g.setColor(Color.CYAN);
-                g.fillRect(610, 215, 50, 50);
-                paintStringInRectangle("W", 610, 215, 50, 50, g);
-            } else if (engine.getLocation(Item.GOOSE) == Location.BOAT) {
-                g.setColor(Color.CYAN);
-                g.fillRect(610, 215, 50, 50);
-                paintStringInRectangle("G", 610, 215, 50, 50, g);
-            } else if (engine.getLocation(Item.BEANS) == Location.BOAT) {
-                g.setColor(Color.CYAN);
-                g.fillRect(610, 215, 50, 50);
-                paintStringInRectangle("B", 610, 215, 50, 50, g);
-            }
-        }
-    }
 
     public void paintStringInRectangle(String str, int x, int y, int width, int height, Graphics g) {
         g.setColor(Color.BLACK);
@@ -194,6 +125,85 @@ public class RiverGUI extends JPanel implements MouseListener {
         // Display the window
         frame.setSize(800, 600);
         frame.setVisible(true);
+
+    }
+
+    private void setActiveRectangles() {
+
+        //Farmer assignment
+        if(engine.getLocation(Item.FARMER)==Location.LEFT_BANK) {
+            farmerRect = leftFarmerRect;
+        }
+        else if(engine.getLocation(Item.FARMER)==Location.RIGHT_BANK) {
+            farmerRect = rightFarmerRect;
+        }
+        else if(engine.getLocation(Item.FARMER)==Location.BOAT && engine.getBoatLocation() == Location.LEFT_BANK) {
+            farmerRect = leftBoatDriverRect;
+        }
+        else if(engine.getLocation(Item.FARMER)==Location.BOAT && engine.getBoatLocation() == Location.RIGHT_BANK) {
+            farmerRect = rightBoatDriverRect;
+        }
+
+        //Wolf Assignment
+        if(engine.getLocation(Item.WOLF)==Location.LEFT_BANK) {
+            wolfRect = leftWolfRect;
+        }
+        else if(engine.getLocation(Item.WOLF)==Location.RIGHT_BANK) {
+            wolfRect = rightWolfRect;
+        }
+        else if(engine.getLocation(Item.WOLF)==Location.BOAT && engine.getBoatLocation() == Location.LEFT_BANK) {
+            wolfRect = leftBoatPassengerRect;
+        }
+        else if(engine.getLocation(Item.WOLF)==Location.BOAT && engine.getBoatLocation() == Location.RIGHT_BANK) {
+            wolfRect = rightBoatPassengerRect;
+        }
+
+        //Goose Assignment
+        if(engine.getLocation(Item.GOOSE)==Location.LEFT_BANK) {
+            gooseRect = leftGooseRect;
+        }
+        else if(engine.getLocation(Item.GOOSE)==Location.RIGHT_BANK) {
+            gooseRect = rightGooseRect;
+        }
+        else if(engine.getLocation(Item.GOOSE)==Location.BOAT && engine.getBoatLocation() == Location.LEFT_BANK) {
+            gooseRect = leftBoatPassengerRect;
+        }
+        else if(engine.getLocation(Item.GOOSE)==Location.BOAT && engine.getBoatLocation() == Location.RIGHT_BANK) {
+            gooseRect = rightBoatPassengerRect;
+        }
+
+        //Beans assignment
+        if(engine.getLocation(Item.BEANS)==Location.LEFT_BANK) {
+            beansRect = leftBeansRect;
+        }
+        else if(engine.getLocation(Item.BEANS)==Location.RIGHT_BANK) {
+            beansRect = rightBeansRect;
+        }
+        else if(engine.getLocation(Item.BEANS)==Location.BOAT && engine.getBoatLocation() == Location.LEFT_BANK) {
+            beansRect = leftBoatPassengerRect;
+        }
+        else if(engine.getLocation(Item.BEANS)==Location.BOAT && engine.getBoatLocation() == Location.RIGHT_BANK) {
+            beansRect = rightBoatPassengerRect;
+        }
+        //Boat Assignment
+        if(engine.getBoatLocation() == Location.LEFT_BANK) {
+            boatRect = leftBoatRect;
+        }
+        else if(engine.getBoatLocation() == Location.RIGHT_BANK) {
+            boatRect = rightBoatRect;
+        }
+
+    }
+
+    private void fillActualRect(Rectangle rectToFill, Graphics g, Color color, String toWrite) {
+        g.setColor(color);
+
+        g.fillRect((int)rectToFill.getX(), (int)rectToFill.getY(),
+            (int)rectToFill.getWidth(), (int)rectToFill.getHeight());
+
+        paintStringInRectangle(toWrite, (int)rectToFill.getX(),
+            (int)rectToFill.getY(), (int)rectToFill.getWidth(),
+            (int)rectToFill.getHeight(), g);
     }
 
     public static void main(String[] args) {
@@ -213,7 +223,6 @@ public class RiverGUI extends JPanel implements MouseListener {
         if (leftFarmerRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.FARMER) == Location.LEFT_BANK) {
                 engine.loadDriver();;
-
             }
 
         } else if (leftWolfRect.contains(e.getPoint())) {
@@ -231,7 +240,7 @@ public class RiverGUI extends JPanel implements MouseListener {
         } else if (leftBoatDriverRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.LEFT_BANK &&
                     engine.getLocation(Item.FARMER) == Location.BOAT) {
-                engine.unloadPassenger();
+                engine.unloadDriver();
             }
         } else if (leftBoatPassengerRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.LEFT_BANK &&
@@ -264,7 +273,7 @@ public class RiverGUI extends JPanel implements MouseListener {
         } else if (rightBoatDriverRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.RIGHT_BANK &&
                     engine.getLocation(Item.FARMER) == Location.BOAT) {
-                engine.unloadPassenger();
+                engine.unloadDriver();
             }
         } else if (rightBoatPassengerRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.RIGHT_BANK &&
@@ -308,3 +317,94 @@ public class RiverGUI extends JPanel implements MouseListener {
         //
     }
 }
+//Old Methods
+//public void paintObjectsOnLeft(Graphics g) {
+//
+//    if (engine.getLocation(Item.FARMER) == Location.LEFT_BANK) {
+//        g.setColor(Color.MAGENTA);
+//        g.fillRect(80, 215, 50, 50);
+//    }
+//    if (engine.getLocation(Item.WOLF) == Location.LEFT_BANK) {
+//        g.setColor(Color.CYAN);
+//        g.fillRect(20, 215, 50, 50);
+//        paintStringInRectangle("W", 20, 215, 50, 50, g);
+//    }
+//    if (engine.getLocation(Item.GOOSE) == Location.LEFT_BANK) {
+//        g.setColor(Color.CYAN);
+//        g.fillRect(20, 275, 50, 50);
+//        paintStringInRectangle("G", 20, 275, 50, 50, g);
+//    }
+//    if (engine.getLocation(Item.BEANS) == Location.LEFT_BANK) {
+//        g.setColor(Color.CYAN);
+//        g.fillRect(80, 275, 50, 50);
+//        paintStringInRectangle("B", 80, 275, 50, 50, g);
+//    }
+//}
+//
+//public void paintObjectsOnRight(Graphics g) {
+//
+//    if (engine.getLocation(Item.FARMER) == Location.RIGHT_BANK) {
+//        g.setColor(Color.MAGENTA);
+//        g.fillRect(730, 215, 50, 50);
+//    }
+//    if (engine.getLocation(Item.WOLF) == Location.RIGHT_BANK) {
+//        g.setColor(Color.CYAN);
+//        g.fillRect(670, 215, 50, 50);
+//        paintStringInRectangle("W", 670, 215, 50, 50, g);
+//    }
+//    if (engine.getLocation(Item.GOOSE) == Location.RIGHT_BANK) {
+//        g.setColor(Color.CYAN);
+//        g.fillRect(670, 275, 50, 50);
+//        paintStringInRectangle("G", 670, 275, 50, 50, g);
+//    }
+//    if (engine.getLocation(Item.BEANS) == Location.RIGHT_BANK) {
+//        g.setColor(Color.CYAN);
+//        g.fillRect(730, 275, 50, 50);
+//        paintStringInRectangle("B", 730, 275, 50, 50, g);
+//    }
+//}
+//
+//public void paintObjectsOnBoat(Graphics g) {
+//    if (engine.getBoatLocation() == Location.LEFT_BANK) {
+//        g.setColor(Color.ORANGE);
+//        g.fillRect(140, 275, 110, 50);
+//        if (engine.getLocation(Item.FARMER) == Location.BOAT) {
+//            g.setColor(Color.MAGENTA);
+//            g.fillRect(140, 215, 50, 50);
+//        }
+//        if (engine.getLocation(Item.WOLF) == Location.BOAT) {
+//            g.setColor(Color.CYAN);
+//            g.fillRect(200, 215, 50, 50);
+//            paintStringInRectangle("W", 200, 215, 50, 50, g);
+//        } else if (engine.getLocation(Item.GOOSE) == Location.BOAT) {
+//            g.setColor(Color.CYAN);
+//            g.fillRect(200, 215, 50, 50);
+//            paintStringInRectangle("G", 200, 215, 50, 50, g);
+//        } else if (engine.getLocation(Item.BEANS) == Location.BOAT) {
+//            g.setColor(Color.CYAN);
+//            g.fillRect(200, 215, 50, 50);
+//            paintStringInRectangle("B", 200, 215, 50, 50, g);
+//        }
+//    }
+//    if (engine.getBoatLocation() == Location.RIGHT_BANK) {
+//        g.setColor(Color.ORANGE);
+//        g.fillRect(550, 275, 110, 50);
+//        if (engine.getLocation(Item.FARMER) == Location.BOAT) {
+//            g.setColor(Color.MAGENTA);
+//            g.fillRect(550, 215, 50, 50);
+//        }
+//        if (engine.getLocation(Item.WOLF) == Location.BOAT) {
+//            g.setColor(Color.CYAN);
+//            g.fillRect(610, 215, 50, 50);
+//            paintStringInRectangle("W", 610, 215, 50, 50, g);
+//        } else if (engine.getLocation(Item.GOOSE) == Location.BOAT) {
+//            g.setColor(Color.CYAN);
+//            g.fillRect(610, 215, 50, 50);
+//            paintStringInRectangle("G", 610, 215, 50, 50, g);
+//        } else if (engine.getLocation(Item.BEANS) == Location.BOAT) {
+//            g.setColor(Color.CYAN);
+//            g.fillRect(610, 215, 50, 50);
+//            paintStringInRectangle("B", 610, 215, 50, 50, g);
+//        }
+//    }
+//}
