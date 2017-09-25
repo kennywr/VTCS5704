@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.Console;
 import java.util.stream.Collector.Characteristics;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -211,31 +212,33 @@ public class RiverGUI extends JPanel implements MouseListener {
 
         if (leftFarmerRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.FARMER) == Location.LEFT_BANK) {
-                engine.loadBoat(Item.FARMER);
+                engine.loadDriver();;
+
             }
+
         } else if (leftWolfRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.WOLF) == Location.LEFT_BANK) {
-                engine.loadBoat(Item.WOLF);
+                engine.loadPassenger(Item.WOLF);
             }
         } else if (leftGooseRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.GOOSE) == Location.LEFT_BANK) {
-                engine.loadBoat(Item.GOOSE);
+                engine.loadPassenger(Item.GOOSE);
             }
         } else if (leftBeansRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.BEANS) == Location.LEFT_BANK) {
-                engine.loadBoat(Item.BEANS);
+                engine.loadPassenger(Item.BEANS);
             }
         } else if (leftBoatDriverRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.LEFT_BANK &&
                     engine.getLocation(Item.FARMER) == Location.BOAT) {
-                engine.unloadBoat();
+                engine.unloadPassenger();
             }
         } else if (leftBoatPassengerRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.LEFT_BANK &&
                     (engine.getLocation(Item.WOLF) == Location.BOAT ||
                     engine.getLocation(Item.GOOSE) == Location.BOAT ||
                     engine.getLocation(Item.BEANS) == Location.BOAT)) {
-                engine.unloadBoat();
+                engine.unloadPassenger();
             }
         } else if (leftBoatRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.LEFT_BANK &&
@@ -244,31 +247,31 @@ public class RiverGUI extends JPanel implements MouseListener {
             }
         } else if (rightFarmerRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.FARMER) == Location.RIGHT_BANK) {
-                engine.loadBoat(Item.FARMER);
+                engine.loadDriver();
             }
         } else if (rightWolfRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.WOLF) == Location.RIGHT_BANK) {
-                engine.loadBoat(Item.WOLF);
+                engine.loadPassenger(Item.WOLF);
             }
         } else if (rightGooseRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.GOOSE) == Location.RIGHT_BANK) {
-                engine.loadBoat(Item.GOOSE);
+                engine.loadPassenger(Item.GOOSE);
             }
         } else if (rightBeansRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.BEANS) == Location.RIGHT_BANK) {
-                engine.loadBoat(Item.BEANS);
+                engine.loadPassenger(Item.BEANS);
             }
         } else if (rightBoatDriverRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.RIGHT_BANK &&
                     engine.getLocation(Item.FARMER) == Location.BOAT) {
-                engine.unloadBoat();
+                engine.unloadPassenger();
             }
         } else if (rightBoatPassengerRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.RIGHT_BANK &&
                     (engine.getLocation(Item.WOLF) == Location.BOAT ||
                     engine.getLocation(Item.GOOSE) == Location.BOAT ||
                     engine.getLocation(Item.BEANS) == Location.BOAT)) {
-                engine.unloadBoat();
+                engine.unloadPassenger();
             }
         } else if (rightBoatRect.contains(e.getPoint())) {
             if (engine.getBoatLocation() == Location.RIGHT_BANK &&

@@ -1,5 +1,6 @@
 package river;
 
+
 /*
  * (1) Create a private method called getGameObject that returns a game object
  *     associated with an id. Use the new method to simplify the getName,
@@ -43,133 +44,73 @@ public class GameEngine {
     private final GameObject goose;
     private final GameObject beans;
     private final GameObject farmer;
-    private Item chars;
-    private Location locs;
-
+    private GameObject passenger;
+    private Location currentBoatLocation = Location.LEFT_BANK;
 
     public GameEngine() {
         wolf = new Wolf();
         goose = new Goose();
         beans = new Beans();
         farmer = new Farmer();
+        passenger = null;
     }
+
 
     public String getName(Item id) {
         return getGameObject(id).getName();
-
-//		Old Version
-//    	switch (id) {
-//        case TOP:
-//            return top.getName();
-//        case MID:
-//            return mid.getName();
-//        case BOTTOM:
-//            return bottom.getName();
-//        default:
-//            return player.getName();
-//        }
     }
 
     public Location getLocation(Item id) {
     	return getGameObject(id).getLocation();
-
-//		Old Version
-//        switch (id) {
-//        case TOP:
-//            return top.getLocation();
-//        case MID:
-//            return mid.getLocation();
-//        case BOTTOM:
-//            return bottom.getLocation();
-//        default:
-//            return player.getLocation();
-//        }
     }
 
     public String getSound(Item id) {
     	return getGameObject(id).getSound();
-
-//	Old Version
-//        switch (id) {
-//        case TOP:
-//            return top.getSound();
-//        case MID:
-//            return mid.getSound();
-//        case BOTTOM:
-//            return bottom.getSound();
-//        default:
-//            return player.getSound();
-//        }
     }
 
     public Location getBoatLocation() {
-        return farmer.getLocation();
+        return currentBoatLocation;
     }
 
-    public void loadBoat(Item id) {
 
-        //check to see if the boat is empty and nearby and if so load the boat
-    	GameObject tempLocation = getGameObject(id);
+    //load driver, unload driver
+    //load passenger(item), unload passenger
 
-    	if(!boatHasPassenger() && tempLocation.getLocation() == farmer.getLocation()) {
-    		getGameObject(id).setLocation(Location.BOAT);
-    	}
-
-//    	switch (id) {
-//        case TOP:
-//            if (top.getLocation() == currentLocation
-//                    && mid.getLocation() != Location.BOAT
-//                    && bottom.getLocation() != Location.BOAT) {
-//                top.setLocation(Location.BOAT);
-//            }
-//            break;
-//        case MID:
-//            if (mid.getLocation() == currentLocation
-//                    && top.getLocation() != Location.BOAT
-//                    && bottom.getLocation() != Location.BOAT) {
-//                mid.setLocation(Location.BOAT);
-//            }
-//            break;
-//        case BOTTOM:
-//            if (bottom.getLocation() == currentLocation
-//                    && top.getLocation() != Location.BOAT
-//                    && mid.getLocation() != Location.BOAT) {
-//                bottom.setLocation(Location.BOAT);
-//            }
-//            break;
-//        default: // do nothing
-//        }
+    public void loadDriver() {
+        farmer.setLocation(Location.BOAT);
+        System.out.println("Farmer says i'm in the boat at " + currentBoatLocation.toString());
     }
 
-    public void unloadBoat() {
+    public void unloadDriver() {
+        farmer.setLocation(currentBoatLocation);
+        System.out.println("Farmer says i'm in the boat at " + currentBoatLocation.toString());
+    }
 
-    	if(boatHasPassenger()) {
-    		getBoatPassenger().setLocation(farmer.getLocation());
-    	}
+    public void loadPassenger(Item id) {
+        if(!hasPassenger())
+        {
+            getGameObject(id).setLocation(Location.BOAT);
+            passenger = getGameObject(id);
+        }
+    }
 
-    	//Old Code
-//        if (top.getLocation() == Location.BOAT) {
-//            top.setLocation(currentLocation);
-//        } else if (mid.getLocation() == Location.BOAT) {
-//            mid.setLocation(currentLocation);
-//        } else if (bottom.getLocation() == Location.BOAT) {
-//            bottom.setLocation(currentLocation);
-//        }
+    public void unloadPassenger() {
+        passenger.setLocation(currentBoatLocation);
+        passenger = null;
     }
 
     public void rowBoat() {
-        assert (farmer.getLocation() != Location.BOAT);
-        farmer.setLocation(farmer.getLocation());
-//        if (currentLocation == Location.START) {
-//            currentLocation = Location.FINISH;
-//            player.setLocation(Location.FINISH);
-//        } else {
-//            currentLocation = Location.START;
-//            player.setLocation(Location.START);
-//        }
+    //if driver is empty, no move
+    //if passenger is empty, nomove - NVM on this
+    //otherwise move boat to other side
+        if(farmer.getLocation() == Location.BOAT) {
+            currentBoatLocation = oppositeLocation();
+        }
+
     }
 
     public boolean gameIsWon() {
+
         return wolf.getLocation() == Location.RIGHT_BANK
                 && goose.getLocation() == Location.RIGHT_BANK
                 && beans.getLocation() == Location.RIGHT_BANK;
@@ -190,64 +131,36 @@ public class GameEngine {
         return false;
     }
 
-    private GameObject getGameObject(Item id) {
-//    	if(id.Wolf.getName() == "WOLF") {
-//    	    return wolf;
-//    	}
-//    	else if(id.Goose.getName() == "GOOSE") {
-//    	    return goose;
-//    	}
-//    	else if(id.Beans.getName() == "BEANS") {
-//    	    return beans;
-//    	}
-//    	else
-//        {
-//            return farmer;
-//        }
-
-        switch (id) {
-         case WOLF:
-             return wolf;
-         case GOOSE:
-             return goose;
-         case BEANS:
-             return beans;
-         default:
-             return farmer;
-         }
+    // ----------------------------------------------------------
+    /**
+     * Get the current value of passenger.
+     * @return The value of passenger for this object.
+     */
+    public GameObject getPassenger()
+    {
+        return passenger;
     }
 
-    private boolean boatHasPassenger() {
-    	if(wolf.getLocation() == Location.BOAT || goose.getLocation() == Location.BOAT || beans.getLocation() == Location.BOAT) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
+    // ----------------------------------------------------------
+    /**
+     * Set the current value of passenger.
+     */
+    public void setPassenger(GameObject inPass)
+    {
+        passenger = inPass;
     }
 
-    private GameObject getBoatPassenger() {
-    	if(wolf.getLocation() == Location.BOAT) {
-    		return wolf;
-    	}
-    	else if(goose.getLocation() == Location.BOAT){
-    		return goose;
-    	}
-    	else if(beans.getLocation() == Location.BOAT) {
-    		return beans;
-    	}
-
-    	return farmer;
-    }
-
-    private Location oppositeLocation() {
-    	if(farmer.getLocation() == Location.LEFT_BANK) {
-    		return Location.RIGHT_BANK;
-    	}
-    	else {
-    		return Location.LEFT_BANK;
-    	}
-
+    // ----------------------------------------------------------
+    /**
+     * is there anything in the passenger slot
+     * @return  bool that is true if there is false if there isn't
+     */
+    public boolean hasPassenger()
+    {
+        if(passenger == null) {
+            return false;
+        }
+        return true;
     }
 
     // ----------------------------------------------------------
@@ -271,4 +184,113 @@ public class GameEngine {
             return farmer;
         }
     }
+
+    private GameObject getGameObject(Item id) {
+//      if(id.Wolf.getName() == "WOLF") {
+//          return wolf;
+//      }
+//      else if(id.Goose.getName() == "GOOSE") {
+//          return goose;
+//      }
+//      else if(id.Beans.getName() == "BEANS") {
+//          return beans;
+//      }
+//      else
+//        {
+//            return farmer;
+//        }
+
+        switch (id) {
+         case WOLF:
+             return wolf;
+         case GOOSE:
+             return goose;
+         case BEANS:
+             return beans;
+         default:
+             return farmer;
+         }
+    }
+
+
+    private Location oppositeLocation() {
+        if(currentBoatLocation == Location.LEFT_BANK) {
+            return Location.RIGHT_BANK;
+        }
+        return Location.LEFT_BANK;
+
+    }
 }
+
+//old methods
+//public void loadBoat(Item id) {
+//
+//  if(!boatHasPassenger()) {
+//      getGameObject(id).location = farmer.getLocation();
+//      System.out.println("loaded" + getGameObject(id).getName() + " onto boat at " + farmer.getLocation().toString());
+//  }
+//
+//
+////  switch (id) {
+////  case TOP:
+////      if (top.getLocation() == currentLocation
+////              && mid.getLocation() != Location.BOAT
+////              && bottom.getLocation() != Location.BOAT) {
+////          top.setLocation(Location.BOAT);
+////      }
+////      break;
+////  case MID:
+////      if (mid.getLocation() == currentLocation
+////              && top.getLocation() != Location.BOAT
+////              && bottom.getLocation() != Location.BOAT) {
+////          mid.setLocation(Location.BOAT);
+////      }
+////      break;
+////  case BOTTOM:
+////      if (bottom.getLocation() == currentLocation
+////              && top.getLocation() != Location.BOAT
+////              && mid.getLocation() != Location.BOAT) {
+////          bottom.setLocation(Location.BOAT);
+////      }
+////      break;
+////  default: // do nothing
+////  }
+//}
+//
+//public void unloadBoat() {
+//
+//if(boatHasPassenger()) {
+//    getBoatPassenger().setLocation(farmer.getLocation());
+//}
+//
+////Old Code
+////  if (top.getLocation() == Location.BOAT) {
+////      top.setLocation(currentLocation);
+////  } else if (mid.getLocation() == Location.BOAT) {
+////      mid.setLocation(currentLocation);
+////  } else if (bottom.getLocation() == Location.BOAT) {
+////      bottom.setLocation(currentLocation);
+////  }
+//}
+//private boolean boatHasPassenger() {
+//if(wolf.getLocation() == Location.BOAT || goose.getLocation() == Location.BOAT || beans.getLocation() == Location.BOAT) {
+//  return true;
+//}
+//else {
+//  return false;
+//}
+//}
+
+//private GameObject getBoatPassenger() {
+//if(wolf.getLocation() == Location.BOAT) {
+//  return wolf;
+//}
+//else if(goose.getLocation() == Location.BOAT){
+//  return goose;
+//}
+//else if(beans.getLocation() == Location.BOAT) {
+//  return beans;
+//}
+//
+//return farmer;
+//}
