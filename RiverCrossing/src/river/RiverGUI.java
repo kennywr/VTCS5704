@@ -7,16 +7,17 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.stream.Collector.Characteristics;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
  * Graphical interface for the River application
- * 
+ *
  * @author Gregory Kulczycki
  */
 public class RiverGUI extends JPanel implements MouseListener {
-    
+
     // ==========================================================
     // Fields (hotspots)
     // ==========================================================
@@ -36,31 +37,31 @@ public class RiverGUI extends JPanel implements MouseListener {
     private final Rectangle rightBoatRect = new Rectangle(550, 275, 110, 50);
     private final Rectangle rightBoatDriverRect = new Rectangle(550, 215, 50, 50);
     private final Rectangle rightBoatPassengerRect = new Rectangle(610, 215, 50, 50);
-    
+
     // ==========================================================
     // Private Fields
     // ==========================================================
-    
+
     private GameEngine engine; // Model
-    
+
     // ==========================================================
     // Constructor
     // ==========================================================
-    
+
     public RiverGUI() {
-        
+
         engine = new GameEngine();
         addMouseListener(this);
-        
+
     }
-    
+
     // ==========================================================
     // Paint Methods (View)
     // ==========================================================
 
     @Override
     public void paintComponent(Graphics g) {
-                
+
         g.setColor(Color.GRAY);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
@@ -68,7 +69,7 @@ public class RiverGUI extends JPanel implements MouseListener {
         paintObjectsOnRight(g);
         paintObjectsOnBoat(g);
     }
-    
+
     public void paintObjectsOnLeft(Graphics g) {
 
         if (engine.getLocation(Item.FARMER) == Location.LEFT_BANK) {
@@ -91,7 +92,7 @@ public class RiverGUI extends JPanel implements MouseListener {
             paintStringInRectangle("B", 80, 275, 50, 50, g);
         }
     }
-    
+
     public void paintObjectsOnRight(Graphics g) {
 
         if (engine.getLocation(Item.FARMER) == Location.RIGHT_BANK) {
@@ -114,7 +115,7 @@ public class RiverGUI extends JPanel implements MouseListener {
             paintStringInRectangle("B", 730, 275, 50, 50, g);
         }
     }
-    
+
     public void paintObjectsOnBoat(Graphics g) {
         if (engine.getBoatLocation() == Location.LEFT_BANK) {
             g.setColor(Color.ORANGE);
@@ -130,11 +131,11 @@ public class RiverGUI extends JPanel implements MouseListener {
             } else if (engine.getLocation(Item.GOOSE) == Location.BOAT) {
                 g.setColor(Color.CYAN);
                 g.fillRect(200, 215, 50, 50);
-                paintStringInRectangle("G", 200, 215, 50, 50, g);               
+                paintStringInRectangle("G", 200, 215, 50, 50, g);
             } else if (engine.getLocation(Item.BEANS) == Location.BOAT) {
                 g.setColor(Color.CYAN);
                 g.fillRect(200, 215, 50, 50);
-                paintStringInRectangle("B", 200, 215, 50, 50, g);               
+                paintStringInRectangle("B", 200, 215, 50, 50, g);
             }
         }
         if (engine.getBoatLocation() == Location.RIGHT_BANK) {
@@ -151,15 +152,15 @@ public class RiverGUI extends JPanel implements MouseListener {
             } else if (engine.getLocation(Item.GOOSE) == Location.BOAT) {
                 g.setColor(Color.CYAN);
                 g.fillRect(610, 215, 50, 50);
-                paintStringInRectangle("G", 610, 215, 50, 50, g);               
+                paintStringInRectangle("G", 610, 215, 50, 50, g);
             } else if (engine.getLocation(Item.BEANS) == Location.BOAT) {
                 g.setColor(Color.CYAN);
                 g.fillRect(610, 215, 50, 50);
-                paintStringInRectangle("B", 610, 215, 50, 50, g);               
+                paintStringInRectangle("B", 610, 215, 50, 50, g);
             }
         }
     }
-    
+
     public void paintStringInRectangle(String str, int x, int y, int width, int height, Graphics g) {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Verdana", Font.BOLD, 36));
@@ -168,34 +169,34 @@ public class RiverGUI extends JPanel implements MouseListener {
         int strYCoord = y + height/2 + 36/2 - 4;
         g.drawString(str, strXCoord, strYCoord);
     }
-    
+
     // ==========================================================
     // Startup Methods
     // ==========================================================
-    
+
     /**
-     * Create the GUI and show it.  For thread safety, 
-     * this method should be invoked from the 
+     * Create the GUI and show it.  For thread safety,
+     * this method should be invoked from the
      * event-dispatching thread.
      */
     private static void createAndShowGUI() {
-        
+
         // Create and set up the window
         JFrame frame = new JFrame("RiverCrossing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create and set up the content pane
         RiverGUI newContentPane = new RiverGUI();
-        newContentPane.setOpaque(true);        
+        newContentPane.setOpaque(true);
         frame.setContentPane(newContentPane);
-        
+
         // Display the window
         frame.setSize(800, 600);
         frame.setVisible(true);
     }
-    
+
     public static void main(String[] args) {
-        
+
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(RiverGUI::createAndShowGUI);
@@ -204,10 +205,10 @@ public class RiverGUI extends JPanel implements MouseListener {
     // ==========================================================
     // MouseListener Methods (Controller)
     // ==========================================================
-    
+
     @Override
     public void mouseClicked(MouseEvent e) {
-        
+
         if (leftFarmerRect.contains(e.getPoint())) {
             if (engine.getLocation(Item.FARMER) == Location.LEFT_BANK) {
                 engine.loadBoat(Item.FARMER);
@@ -278,12 +279,12 @@ public class RiverGUI extends JPanel implements MouseListener {
             return;
         }
         repaint();
-    }   
+    }
 
     // ----------------------------------------------------------
     // None of these methods will be used
     // ----------------------------------------------------------
-    
+
     @Override
     public void mousePressed(MouseEvent e) {
         //
@@ -302,5 +303,5 @@ public class RiverGUI extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
         //
-    }    
+    }
 }
