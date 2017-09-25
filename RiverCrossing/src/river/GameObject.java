@@ -1,7 +1,5 @@
 package river;
 
-import river.GameEngine.Location;
-
 /*
  * (1) Introduce a field named sound of type String into this super class.
  *     Change the getSound method so it simply returns the sound field. Set
@@ -28,7 +26,7 @@ public class GameObject {
     public GameObject (){
         name = "";
         sound = "";
-        location = Location.START;
+        location = Location.LEFT_BANK;
     };
 
     public String getName() {
