@@ -49,12 +49,24 @@ public class GameEngineTest {
     public void testGooseTransport() {
         Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.GOOSE));
         engine.loadPassenger(Item.GOOSE);
-        Assert.assertEquals(Location.BOAT, engine.getLocation(Item.GOOSE));
+        Assert.assertEquals("Goose", engine.getPassenger().getName());
         engine.loadDriver();
         engine.rowBoat();
-        Assert.assertEquals(Location.BOAT, engine.getLocation(Item.GOOSE));
+        Assert.assertEquals("Goose", engine.getPassenger().getName());
         engine.unloadPassenger();
         engine.unloadDriver();
+        Assert.assertEquals(Location.RIGHT_BANK, engine.getLocation(Item.GOOSE));
+    }
+    
+    @Test
+    public void testMidTransport() {
+        Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.GOOSE));
+        engine.loadBoat(Item.GOOSE);
+        Assert.assertEquals(Location.BOAT, engine.getLocation(Item.GOOSE));
+        engine.loadBoat(Item.FARMER);
+        engine.rowBoat();
+        Assert.assertEquals(Location.BOAT, engine.getLocation(Item.GOOSE));
+        engine.unLoadBoat();
         Assert.assertEquals(Location.RIGHT_BANK, engine.getLocation(Item.GOOSE));
     }
 
@@ -105,6 +117,8 @@ public class GameEngineTest {
         transportID(Item.GOOSE);
         Assert.assertFalse(engine.gameIsLost());
         Assert.assertTrue(engine.gameIsWon());
+        
+        Assert.assertTrue(engine.isResetNeeded());
     }
 
     @Test
@@ -150,14 +164,71 @@ public class GameEngineTest {
         engine.loadPassenger(Item.WOLF);
 
         // check that the state has not changed
-        //Assert.assertEquals(topLoc, engine.getLocation(Item.WOLF));
+        Assert.assertEquals(topLoc, engine.getLocation(Item.WOLF));
         Assert.assertEquals(midLoc, engine.getLocation(Item.GOOSE));
         Assert.assertEquals(bottomLoc, engine.getLocation(Item.BEANS));
         Assert.assertEquals(playerLoc, engine.getLocation(Item.FARMER));
     }
+    
+    @Test
+	public void testGameEngineGetters() {
+	Assert.assertEquals("Wolf", engine.getName(Item.WOLF));
+	Assert.assertEquals("Howl", engine.getSound(Item.WOLF));
+	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.WOLF));
+	Assert.assertEquals(Location.LEFT_BANK, engine.getBoatLocation());
+    }
+    
+    @Test
+    public void testTwoPassengers() {
+    	engine.loadPassenger(Item.GOOSE);
+    	engine.loadPassenger(Item.BEANS);
+    	Assert.assertEquals("Goose", engine.getPassenger().getName());
+    }
+    
+    @Test
+    public void testNoDriverBoat() {
+    	engine.loadPassenger(Item.GOOSE);
+    	engine.rowBoat();
+    	Assert.assertEquals("Goose", engine.getPassenger().getName());
+    	Assert.assertEquals(Location.LEFT_BANK, engine.getBoatLocation());
+    }
+    
+    @Test
+    public void resetGame() {
+    	engine.resetGame();
+    	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.FARMER));
+    }
+    
+    @Test
+    public void loadAllPassengers() {
+    	engine.loadPassenger(Item.GOOSE);
+    	Assert.assertEquals("Goose", engine.getPassenger().getName());
+    	engine.unloadPassenger();
+    	engine.loadPassenger(Item.WOLF);
+    	Assert.assertEquals("Wolf", engine.getPassenger().getName());
+    	engine.unloadPassenger();
+    	engine.loadPassenger(Item.BEANS);
+    	Assert.assertEquals("Beans", engine.getPassenger().getName());
+    	engine.unloadPassenger();
+    	
+    	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.FARMER));
+    	
+    }
+    
+    @Test
+    public void unloadEmptyBoat() {
+    	engine.unLoadBoat();
+    	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.FARMER));
+    }
+    
+    @Test
+    public void gameIsLostTester() {
+    	
+    }
 
     private void transportID(Item id) {
-        engine.loadPassenger(id);
+        engine.loadBoat(Item.FARMER);
+    	engine.loadPassenger(id);
         engine.loadDriver();
         engine.rowBoat();
         engine.unloadPassenger();
@@ -165,7 +236,8 @@ public class GameEngineTest {
     }
 
     public void goBackAlone() {
-        engine.loadDriver();
+    	engine.loadBoat(Item.FARMER);
+    	engine.loadDriver();
         engine.rowBoat();
         engine.unloadDriver();
     }

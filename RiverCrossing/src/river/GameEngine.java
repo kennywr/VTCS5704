@@ -46,8 +46,25 @@ public class GameEngine {
     private final GameObject farmer;
     private GameObject passenger;
     private Location currentBoatLocation = Location.LEFT_BANK;
+    private boolean resetNeeded = false;
 
-    public GameEngine() {
+    /**
+	 * @return the resetNeeded
+	 */
+	public boolean isResetNeeded() {
+		return resetNeeded;
+	}
+
+
+	/**
+	 * @param resetNeeded the resetNeeded to set
+	 */
+	public void setResetNeeded(boolean resetNeeded) {
+		this.resetNeeded = resetNeeded;
+	}
+
+
+	public GameEngine() {
         wolf = new Wolf();
         goose = new Goose();
         beans = new Beans();
@@ -72,31 +89,33 @@ public class GameEngine {
         return currentBoatLocation;
     }
 
+    public void setBoatLocation(Location loc) {
+        currentBoatLocation = loc;
+    }
+
 
     //load driver, unload driver
     //load passenger(item), unload passenger
 
     public void loadDriver() {
         farmer.setLocation(Location.BOAT);
-        System.out.println("Farmer says i'm in the boat at " + currentBoatLocation.toString());
     }
 
     public void unloadDriver() {
         farmer.setLocation(currentBoatLocation);
-        System.out.println("Farmer says i'm in the boat at " + currentBoatLocation.toString());
     }
 
     public void loadPassenger(Item id) {
         if(!hasPassenger())
         {
-            getGameObject(id).setLocation(Location.BOAT);
-            passenger = getGameObject(id);
+            //getGameObject(id).setLocation(Location.BOAT);
+            setPassenger(getGameObject(id));
         }
     }
 
     public void unloadPassenger() {
         passenger.setLocation(currentBoatLocation);
-        passenger = null;
+        setPassenger(null);
     }
 
     public void rowBoat() {
@@ -104,34 +123,48 @@ public class GameEngine {
     //if passenger is empty, nomove - NVM on this
     //otherwise move boat to other side
         if(farmer.getLocation() == Location.BOAT) {
-            currentBoatLocation = oppositeLocation();
+            setBoatLocation(oppositeLocation());
+            if(hasPassenger()) {
+                passenger.setLocation(Location.BOAT);
+            }
         }
 
     }
 
     public boolean gameIsWon() {
-
-        return wolf.getLocation() == Location.RIGHT_BANK
+    	if(wolf.getLocation() == Location.RIGHT_BANK
                 && goose.getLocation() == Location.RIGHT_BANK
-                && beans.getLocation() == Location.RIGHT_BANK;
+                && beans.getLocation() == Location.RIGHT_BANK) {
+    		setResetNeeded(true);
+    		return true;
+    	}
+    	return false;
+
     }
 
     public boolean gameIsLost() {
-        if (goose.getLocation() == Location.BOAT) {
-            return false;
+
+        if (goose.getLocation() != farmer.getLocation()
+                && goose.getLocation() == wolf.getLocation() && getBoatLocation() != goose.getLocation()) {
+        	setResetNeeded(true);
+        	return true;
         }
         if (goose.getLocation() != farmer.getLocation()
-                && goose.getLocation() == wolf.getLocation()) {
-            return true;
-        }
-        if (goose.getLocation() != farmer.getLocation()
-                && goose.getLocation() == beans.getLocation()) {
-            return true;
+                && goose.getLocation() == beans.getLocation() && getBoatLocation() != goose.getLocation()) {
+        	setResetNeeded(true);
+        	return true;
         }
         return false;
     }
 
     public void resetGame() {
+    	setResetNeeded(false);
+    	farmer.setLocation(Location.LEFT_BANK);
+    	wolf.setLocation(Location.LEFT_BANK);
+    	goose.setLocation(Location.LEFT_BANK);
+    	beans.setLocation(Location.LEFT_BANK);
+    	currentBoatLocation = Location.LEFT_BANK;
+    	setPassenger(null);
 
     }
     // ----------------------------------------------------------
@@ -164,6 +197,26 @@ public class GameEngine {
             return false;
         }
         return true;
+    }
+
+    public void loadBoat(Item id) {
+
+    	if(getGameObject(id).getName() != "Farmer") {
+    		getGameObject(id).setLocation(Location.BOAT);
+    		loadPassenger(id);
+    		loadDriver();
+    	}
+
+
+    }
+
+	public void unLoadBoat() {
+		if(hasPassenger()) {
+			unloadPassenger();
+			unloadDriver();
+			//passenger.setLocation(currentBoatLocation);
+		}
+
     }
 
     private GameObject getGameObject(Item id) {
