@@ -57,7 +57,7 @@ public class GameEngineTest {
         engine.unloadDriver();
         Assert.assertEquals(Location.RIGHT_BANK, engine.getLocation(Item.GOOSE));
     }
-    
+
     @Test
     public void testMidTransport() {
         Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.GOOSE));
@@ -117,7 +117,7 @@ public class GameEngineTest {
         transportID(Item.GOOSE);
         Assert.assertFalse(engine.gameIsLost());
         Assert.assertTrue(engine.gameIsWon());
-        
+
         Assert.assertTrue(engine.isResetNeeded());
     }
 
@@ -169,7 +169,15 @@ public class GameEngineTest {
         Assert.assertEquals(bottomLoc, engine.getLocation(Item.BEANS));
         Assert.assertEquals(playerLoc, engine.getLocation(Item.FARMER));
     }
-    
+
+    @Test
+    public void reallyLongPassengerTest() {
+        engine.setBoatLocation(Location.RIGHT_BANK);
+
+
+
+    }
+
     @Test
 	public void testGameEngineGetters() {
 	Assert.assertEquals("Wolf", engine.getName(Item.WOLF));
@@ -177,14 +185,14 @@ public class GameEngineTest {
 	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.WOLF));
 	Assert.assertEquals(Location.LEFT_BANK, engine.getBoatLocation());
     }
-    
+
     @Test
     public void testTwoPassengers() {
     	engine.loadPassenger(Item.GOOSE);
     	engine.loadPassenger(Item.BEANS);
     	Assert.assertEquals("Goose", engine.getPassenger().getName());
     }
-    
+
     @Test
     public void testNoDriverBoat() {
     	engine.loadPassenger(Item.GOOSE);
@@ -192,13 +200,13 @@ public class GameEngineTest {
     	Assert.assertEquals("Goose", engine.getPassenger().getName());
     	Assert.assertEquals(Location.LEFT_BANK, engine.getBoatLocation());
     }
-    
+
     @Test
     public void resetGame() {
     	engine.resetGame();
     	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.FARMER));
     }
-    
+
     @Test
     public void loadAllPassengers() {
     	engine.loadPassenger(Item.GOOSE);
@@ -210,20 +218,20 @@ public class GameEngineTest {
     	engine.loadPassenger(Item.BEANS);
     	Assert.assertEquals("Beans", engine.getPassenger().getName());
     	engine.unloadPassenger();
-    	
+
     	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.FARMER));
-    	
+
     }
-    
+
     @Test
     public void unloadEmptyBoat() {
     	engine.unLoadBoat();
     	Assert.assertEquals(Location.LEFT_BANK, engine.getLocation(Item.FARMER));
     }
-    
+
     @Test
     public void gameIsLostTester() {
-    	
+
     }
 
     private void transportID(Item id) {
